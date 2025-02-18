@@ -29,26 +29,32 @@ Importante: Tanto o relatório quanto o projeto não estão finalizados. O siste
    ```bash
    python --version
    ```
-2. **Ambiente Virtual (opcional, mas recomendado)**: Crie um ambiente virtual para isolar as dependências do projeto:
-   ```bash
-   python -m venv venv
-   ```
-   - No Windows:
-     ```bash
-     venv\Scripts\activate
-     ```
-   - No Linux/Mac:
-     ```bash
-     source venv/bin/activate
-     ```
 
 ### Instalação das Dependências
 1. Clone o repositório do projeto:
    ```bash
    git clone https://github.com/EvertonHSP/QuizQuestoes.git
-   cd sistema-recomendacao-questoes
+   cd QuizQuestoes
    ```
-2. Instale as dependências listadas no arquivo `requirements.txt`:
+
+2. Crie um ambiente virtual para isolar as dependências do projeto:
+   ```bash
+   python -m venv venv
+   ```
+
+3. Ative o ambiente virtual:
+
+   - No Windows:
+     ```bash
+     venv\Scripts\activate
+     ```
+
+   - No Linux/Mac:
+     ```bash
+     source venv/bin/activate
+     ```
+
+4. Instale as dependências listadas no arquivo `requirements.txt`:
    ```bash
    pip install -r requirements.txt
    ```
