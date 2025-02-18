@@ -45,7 +45,7 @@ Importante: Tanto o relatório quanto o projeto não estão finalizados. O siste
 ### Instalação das Dependências
 1. Clone o repositório do projeto:
    ```bash
-   git clone https://github.com/seu-usuario/sistema-recomendacao-questoes.git
+   git clone https://github.com/EvertonHSP/QuizQuestoes.git
    cd sistema-recomendacao-questoes
    ```
 2. Instale as dependências listadas no arquivo `requirements.txt`:
