@@ -15,7 +15,6 @@ from PyQt5.QtGui import QPixmap, QFont, QPalette, QBrush
 from PyQt5.QtCore import Qt
 from PIL import Image
 from io import BytesIO
-from PyQt5.QtWidgets import QFrame
 from datetime import datetime
 
 
@@ -204,7 +203,8 @@ class InterfaceApp(QMainWindow):
         # Painel de resumo de desempenho
         self.resumo_frame = QFrame()
         self.resumo_frame.setStyleSheet("""
-            background-color: rgba(0, 0, 0, 90);  /* Preto com 60% de opacidade */
+            background-color: rgba(0, 0, 0, 60);  /* Preto com 60% de opacidade */
+            border: 1px solid white;
             border-radius: 15px;
             padding: 15px;
         """)
@@ -216,6 +216,8 @@ class InterfaceApp(QMainWindow):
         self.resumo_label = QLabel()
         self.resumo_label.setFont(QFont("Arial", 12))
         self.resumo_label.setStyleSheet("""
+            background-color: rgba(255, 255, 255, 60);  /* Fundo semi-transparente */
+            border: 1px solid white;
             color: white;
         """)
         self.resumo_label.setAlignment(Qt.AlignCenter)
@@ -223,11 +225,14 @@ class InterfaceApp(QMainWindow):
 
         layout.addWidget(self.resumo_frame, alignment=Qt.AlignCenter)
 
+        # Reduz o espaçamento entre os widgets no layout principal
+        layout.setSpacing(10)
+
         # Botão "Começar Quiz"
         comecar_button = QPushButton("Começar Quiz")
         comecar_button.setStyleSheet("""
             QPushButton {
-                background-color: rgba(0, 0, 0, 60);
+                background-color: rgba(0, 0, 0, 80);
                 color: white;
                 border-radius: 5px;
                 padding: 10px;
@@ -236,22 +241,20 @@ class InterfaceApp(QMainWindow):
                 max-width: 200px;  /* Largura máxima */
             }
             QPushButton:hover {
-                background-color: rgba(0, 0, 0, 120);
+                background-color: rgba(0, 0, 0, 160);
             }
             QPushButton:pressed {
                 background-color: rgba(0, 0, 0, 240);
             }
         """)
         comecar_button.setFixedWidth(200)  # Largura fixa
-
         comecar_button.clicked.connect(self.show_quiz_screen)
-        layout.addWidget(comecar_button, alignment=Qt.AlignCenter)
 
         # Botão "Sair"
         sair_button = QPushButton("Sair")
         sair_button.setStyleSheet("""
             QPushButton {
-                background-color: rgba(0, 0, 0, 60);
+                background-color: rgba(0, 0, 0, 80);
                 color: white;
                 border-radius: 5px;
                 padding: 10px;
@@ -260,7 +263,7 @@ class InterfaceApp(QMainWindow):
                 max-width: 200px;  /* Largura máxima */
             }
             QPushButton:hover {
-                background-color: rgba(0, 0, 0, 120);
+                background-color: rgba(0, 0, 0, 160);
             }
             QPushButton:pressed {
                 background-color: rgba(0, 0, 0, 240);
@@ -268,7 +271,21 @@ class InterfaceApp(QMainWindow):
         """)
         sair_button.setFixedWidth(200)  # Largura fixa
         sair_button.clicked.connect(self.show_login_screen)
-        layout.addWidget(sair_button, alignment=Qt.AlignCenter)
+
+        # Layout horizontal para os botões
+        button_layout = QHBoxLayout()
+        button_layout.setSpacing(10)  # Espaçamento entre os botões
+
+        # Adiciona os botões ao layout horizontal
+        button_layout.addWidget(comecar_button)
+        button_layout.addWidget(sair_button)
+
+        # Adiciona o layout horizontal ao layout principal
+        layout.addLayout(button_layout)
+
+        # Centraliza os botões na tela
+        layout.setAlignment(Qt.AlignCenter)
+
         screen.setLayout(layout)
         return screen
 
@@ -556,20 +573,42 @@ class InterfaceApp(QMainWindow):
         screen = QWidget()
         layout = QVBoxLayout()
 
+        # Cria um QFrame para o retângulo semitransparente
+        frame = QFrame()
+        frame.setStyleSheet("""
+            QFrame {
+                background-color: rgba(0, 0, 0, 80);  /* Preto com 60% de transparência */
+                border: 1px solid white;
+                border-radius: 10px;
+                padding: 20px;
+            }
+        """)
+        frame_layout = QVBoxLayout()
+
         # Label para exibir o desempenho
         self.desempenho_label = QLabel()
         self.desempenho_label.setFont(QFont("Arial", 14))
         self.desempenho_label.setAlignment(Qt.AlignCenter)
         self.desempenho_label.setWordWrap(True)
-        self.desempenho_label.setStyleSheet(
-            "color: white; font-weight: bold;")  # Texto branco e negrito
-        layout.addWidget(self.desempenho_label)
+        self.desempenho_label.setStyleSheet("""
+            background-color: rgba(255, 255, 255, 80);  /* Fundo semi-transparente */
+            border: 1px solid white;
+            color: white; 
+            font-weight: bold;
+            """)  # Texto branco e negrito
+        frame_layout.addWidget(self.desempenho_label)
+
+        # Adiciona o layout do frame ao frame
+        frame.setLayout(frame_layout)
+
+        # Adiciona o frame ao layout principal
+        layout.addWidget(frame, alignment=Qt.AlignCenter)
 
         # Botão para fechar
         fechar_button = QPushButton("Fechar")
         fechar_button.setStyleSheet("""
             QPushButton {
-                background-color: rgba(0, 0, 0, 60);
+                background-color: rgba(0, 0, 0, 80);
                 color: white;
                 border-radius: 5px;
                 padding: 10px;
@@ -578,10 +617,10 @@ class InterfaceApp(QMainWindow):
                 max-width: 200px;  /* Largura máxima */
             }
             QPushButton:hover {
-                background-color: rgba(0, 0, 0, 120);
+                background-color: rgba(0, 0, 0, 160);
             }
             QPushButton:pressed {
-                background-color: rgba(0, 0, 0, 240);
+                background-color: rgba(255, 255, 255, 240);
             }
         """)
         fechar_button.setFixedWidth(200)

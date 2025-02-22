@@ -1,5 +1,6 @@
 import logging
 import torch
+from datetime import datetime
 from DatabaseManager import DatabaseManager
 from sentence_transformers import SentenceTransformer
 from sentence_transformers.util import pytorch_cos_sim
@@ -78,6 +79,24 @@ class IntermediaryManager:
         pior_area = min(desempenho_por_area.items(),
                         key=lambda x: x[1]["porcentagem_acertos"], default=None)
 
+        # Análise temporal do desempenho
+        desempenho_por_data = {}
+        for h in historico:
+            data = datetime.strptime(h.dataTime, "%Y-%m-%d %H:%M:%S.%f").date()
+            if data not in desempenho_por_data:
+                desempenho_por_data[data] = {"acertos": 0, "erros": 0}
+            if h.acerto == 1:
+                desempenho_por_data[data]["acertos"] += 1
+            else:
+                desempenho_por_data[data]["erros"] += 1
+
+        # Calcula a porcentagem de acertos por data
+        for data, dados in desempenho_por_data.items():
+            total_data = dados["acertos"] + dados["erros"]
+            porcentagem_acertos_data = (
+                dados["acertos"] / total_data) * 100 if total_data > 0 else 0
+            desempenho_por_data[data]["porcentagem_acertos"] = porcentagem_acertos_data
+
         # Formata a mensagem de desempenho
         nome_usuario = self.usuario_dao.get_user_by_id(id_usuario).nome
         mensagem = (
@@ -94,6 +113,11 @@ class IntermediaryManager:
                 f"- Melhor Desempenho: {melhor_area[0]} ({melhor_area[1]['porcentagem_acertos']:.2f}% de acertos)\n"
                 f"- Pior Desempenho: {pior_area[0]} ({pior_area[1]['porcentagem_acertos']:.2f}% de acertos)\n"
             )
+
+        # Adiciona informações sobre o desempenho ao longo do tempo
+        mensagem += "\nDesempenho ao Longo do Tempo:\n"
+        for data, dados in desempenho_por_data.items():
+            mensagem += f"- {data}: {dados['porcentagem_acertos']:.2f}% de acertos\n"
 
         return mensagem
 
