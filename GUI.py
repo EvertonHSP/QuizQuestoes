@@ -9,7 +9,9 @@ from PyQt5.QtWidgets import (
     QMessageBox,
     QStackedWidget,
     QFrame,
-    QGridLayout  # Adicione esta linha
+    QGridLayout,
+    QScrollArea
+    # Adicione esta linha
 )
 from PyQt5.QtGui import QPixmap, QFont, QPalette, QBrush
 from PyQt5.QtCore import Qt
@@ -203,25 +205,66 @@ class InterfaceApp(QMainWindow):
         # Painel de resumo de desempenho
         self.resumo_frame = QFrame()
         self.resumo_frame.setStyleSheet("""
-            background-color: rgba(0, 0, 0, 60);  /* Preto com 60% de opacidade */
+            background-color: rgba(0, 0, 0, 70);  /* Preto com 60% de opacidade */
             border: 1px solid white;
             border-radius: 15px;
             padding: 15px;
         """)
-        self.resumo_frame.setFixedSize(500, 350)  # Tamanho do painel
+        self.resumo_frame.setMinimumSize(
+            550, 400)  # Tamanho mínimo  # Tamanho do painel
         resumo_layout = QVBoxLayout(self.resumo_frame)
         resumo_layout.setAlignment(Qt.AlignCenter)
+
+        # Cria um QScrollArea para permitir rolagem manual
+        scroll_area = QScrollArea()
+        # Permite que o widget interno se ajuste ao tamanho
+        scroll_area.setWidgetResizable(True)
+        scroll_area.setStyleSheet("""
+            QScrollArea {
+                background-color: rgba(255, 255, 255, 50);
+            }
+            QScrollBar:vertical {
+                background: rgba(255, 255, 255, 30);  /* Fundo da barra de rolagem */
+                width: 12px;  /* Largura da barra de rolagem */
+                margin: 0px 0px 0px 0px;
+            }
+            QScrollBar::handle:vertical {
+                background: rgba(255, 255, 255, 150);  /* Cor do manipulador da barra de rolagem */
+                min-height: 20px;  /* Altura mínima do manipulador */
+                border-radius: 6px;  /* Bordas arredondadas */
+            }
+            QScrollBar::add-line:vertical,
+            QScrollBar::sub-line:vertical {
+                background: none;  /* Remove as setas de rolagem */
+            }
+            QScrollBar::add-page:vertical,
+            QScrollBar::sub-page:vertical {
+                background: none;  /* Remove o fundo da área da barra de rolagem */
+            }
+        """)
 
         # Label para exibir o resumo de desempenho
         self.resumo_label = QLabel()
         self.resumo_label.setFont(QFont("Arial", 12))
         self.resumo_label.setStyleSheet("""
-            background-color: rgba(255, 255, 255, 60);  /* Fundo semi-transparente */
-            border: 1px solid white;
+            background-color: rgba(255, 255, 255, 0);
             color: white;
+            font-weight: bold;
         """)
-        self.resumo_label.setAlignment(Qt.AlignCenter)
-        resumo_layout.addWidget(self.resumo_label)
+        self.resumo_label.setAlignment(
+            Qt.AlignLeft)  # Alinha o texto à esquerda
+        # Permite que o texto quebre em várias linhas
+        self.resumo_label.setWordWrap(True)
+
+        # Defina o texto longo no QLabel
+        self.marquee_text = "Este é um exemplo de texto longo. " * 20
+        self.resumo_label.setText(self.marquee_text)
+
+        # Adiciona o QLabel ao QScrollArea
+        scroll_area.setWidget(self.resumo_label)
+
+        # Adiciona o QScrollArea ao layout do resumo_frame
+        resumo_layout.addWidget(scroll_area)
 
         layout.addWidget(self.resumo_frame, alignment=Qt.AlignCenter)
 
@@ -583,20 +626,55 @@ class InterfaceApp(QMainWindow):
                 padding: 20px;
             }
         """)
+        frame.setMinimumSize(600, 500)  # Tamanho mínimo
         frame_layout = QVBoxLayout()
+
+        # Cria um QScrollArea para permitir rolagem manual
+        scroll_area = QScrollArea()
+        # Permite que o widget interno se ajuste ao tamanho
+        scroll_area.setWidgetResizable(True)
+        scroll_area.setStyleSheet("""
+            QScrollArea {
+                background-color: rgba(255, 255, 255, 50);
+            }
+            QScrollBar:vertical {
+                background: rgba(255, 255, 255, 30);  /* Fundo da barra de rolagem */
+                width: 12px;  /* Largura da barra de rolagem */
+                margin: 0px 0px 0px 0px;
+            }
+            QScrollBar::handle:vertical {
+                background: rgba(255, 255, 255, 150);  /* Cor do manipulador da barra de rolagem */
+                min-height: 20px;  /* Altura mínima do manipulador */
+                border-radius: 6px;  /* Bordas arredondadas */
+            }
+            QScrollBar::add-line:vertical,
+            QScrollBar::sub-line:vertical {
+                background: none;  /* Remove as setas de rolagem */
+            }
+            QScrollBar::add-page:vertical,
+            QScrollBar::sub-page:vertical {
+                background: none;  /* Remove o fundo da área da barra de rolagem */
+            }
+        """)
 
         # Label para exibir o desempenho
         self.desempenho_label = QLabel()
         self.desempenho_label.setFont(QFont("Arial", 14))
-        self.desempenho_label.setAlignment(Qt.AlignCenter)
+        self.desempenho_label.setAlignment(
+            Qt.AlignLeft)  # Alinha o texto à esquerda
+        # Permite que o texto quebre em várias linhas
         self.desempenho_label.setWordWrap(True)
         self.desempenho_label.setStyleSheet("""
-            background-color: rgba(255, 255, 255, 80);  /* Fundo semi-transparente */
-            border: 1px solid white;
-            color: white; 
+            background-color: rgba(255, 255, 255, 0);  /* Fundo transparente */
+            color: white;
             font-weight: bold;
-            """)  # Texto branco e negrito
-        frame_layout.addWidget(self.desempenho_label)
+        """)
+
+        # Adiciona o QLabel ao QScrollArea
+        scroll_area.setWidget(self.desempenho_label)
+
+        # Adiciona o QScrollArea ao layout do frame
+        frame_layout.addWidget(scroll_area)
 
         # Adiciona o layout do frame ao frame
         frame.setLayout(frame_layout)
@@ -636,8 +714,9 @@ class InterfaceApp(QMainWindow):
 
     def show_intermediate_screen(self):
         """Mostra a tela intermediária após o login."""
-        print("idddddddddddddddddddddddddddd...", self.id_usuario)
-        self.stacked_widget.setCurrentIndex(1)  # Índice da tela intermediária
+        self.atualizar_resumo_desempenho()
+        self.stacked_widget.setCurrentIndex(1)
+        self.atualizar_resumo_desempenho()  # Índice da tela intermediária
 
     def show_cadastro_screen(self):
         """Mostra a tela de cadastro."""
@@ -664,7 +743,7 @@ class InterfaceApp(QMainWindow):
         senha = self.senha_entry.text()
         self.id_usuario = self.intermediary_manager.autenticar_usuario(
             email, senha)
-        print("idddddddddddddddddddddddddddddddddddddddddddddd...", self.id_usuario)
+        print("id autenticado: ", self.id_usuario)
         if self.id_usuario:
             self.atualizar_resumo_desempenho()
             self.show_intermediate_screen()  # Redireciona para a tela intermediária
@@ -791,11 +870,9 @@ class InterfaceApp(QMainWindow):
 
     def mostrar_desempenho(self):
         """Mostra a tela de desempenho."""
-        print("def mostrar_desempenho(self)...", self.id_usuario)
         if self.id_usuario:
             desempenho = self.intermediary_manager.calcular_desempenho(
                 self.id_usuario)
-            print("def mostrar_desempenho(self)...", desempenho)
         else:
             desempenho = "Usuário não autenticado."
 
@@ -805,7 +882,6 @@ class InterfaceApp(QMainWindow):
     def atualizar_resumo_desempenho(self):
         """Atualiza o resumo de desempenho na tela intermediária."""
         if hasattr(self, 'resumo_label'):  # Verifica se o resumo_label já foi criado
-            print("if hasattr(self, 'resumo_label'):...")
             if self.id_usuario:
                 # Calcula o desempenho do usuário
                 desempenho = self.intermediary_manager.calcular_desempenho(

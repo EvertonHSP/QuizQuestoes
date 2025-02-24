@@ -11,7 +11,6 @@ from DAO import HistoricoUsuarioDAO, EmbeddingDAO, ProvaDAO
 
 
 class IntermediaryManager:
-    print("Processando o arquivo IntermediaryManager...")
 
     def __init__(self, db_path):
         self.db_manager = DatabaseManager(db_path)
@@ -36,10 +35,11 @@ class IntermediaryManager:
 
     def calcular_desempenho(self, id_usuario):
         print("Processando def calcular_desempenho...", id_usuario)
+        nome_usuario = self.usuario_dao.get_user_by_id(id_usuario).nome
         """Calcula o desempenho do usuário com base no histórico."""
         historico = self.historico_dao.get_historico_by_usuario(id_usuario)
         if not historico:
-            return f"Usuário {id_usuario} ainda não respondeu nenhuma questão."
+            return f"Usuário {nome_usuario} ainda não respondeu nenhuma questão."
 
         # Cálculo do desempenho geral
         total_acertos = sum(1 for h in historico if h.acerto == 1)
@@ -98,26 +98,26 @@ class IntermediaryManager:
             desempenho_por_data[data]["porcentagem_acertos"] = porcentagem_acertos_data
 
         # Formata a mensagem de desempenho
-        nome_usuario = self.usuario_dao.get_user_by_id(id_usuario).nome
+
         mensagem = (
             f"Desempenho do Usuário {nome_usuario}:\n"
-            f"- Total de Respostas: {total_respostas}\n"
-            f"- Acertos: {total_acertos} ({porcentagem_acertos:.2f}%)\n"
-            f"- Classificação Geral: {classificacao}\n"
+            f"  - Total de Respostas: {total_respostas}\n"
+            f"  - Acertos: {total_acertos} ({porcentagem_acertos:.2f}%)\n"
+            f"  - Classificação Geral: {classificacao}\n"
         )
 
         # Adiciona informações sobre as áreas de conhecimento
         if melhor_area and pior_area:
             mensagem += (
                 f"\nÁreas de Conhecimento:\n"
-                f"- Melhor Desempenho: {melhor_area[0]} ({melhor_area[1]['porcentagem_acertos']:.2f}% de acertos)\n"
-                f"- Pior Desempenho: {pior_area[0]} ({pior_area[1]['porcentagem_acertos']:.2f}% de acertos)\n"
+                f"  - Melhor Desempenho: {melhor_area[0]} ({melhor_area[1]['porcentagem_acertos']:.2f}% de acertos)\n"
+                f"  - Pior Desempenho: {pior_area[0]} ({pior_area[1]['porcentagem_acertos']:.2f}% de acertos)\n"
             )
 
         # Adiciona informações sobre o desempenho ao longo do tempo
         mensagem += "\nDesempenho ao Longo do Tempo:\n"
         for data, dados in desempenho_por_data.items():
-            mensagem += f"- {data}: {dados['porcentagem_acertos']:.2f}% de acertos\n"
+            mensagem += f"  - {data}: {dados['porcentagem_acertos']:.2f}% de acertos\n"
 
         return mensagem
 
